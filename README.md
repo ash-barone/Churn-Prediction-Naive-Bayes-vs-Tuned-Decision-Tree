@@ -1,23 +1,73 @@
-# Churn-Prediction-Naive-Bayes-vs-Tuned-Decision-Tree
-Predicting telecom customer churn using two methods.
+# Predicting Customer Churn: Naive Bayes vs. Tuned Decision Tree
 
-## Customer Churn Classification - GaussianNB
+Two supervised classification approaches to the same problem: predicting which
+telecom customers will churn, and identifying the factors that drive it. Both
+models run on the same 10,000-customer dataset and answer the same question,
+which makes this a direct comparison of how two different algorithms handle it.
+
+## The Two Models
+
+**1. Gaussian Naive Bayes**
+A fast probabilistic baseline. Reaches 0.89 ROC AUC and recovers 87% of actual
+churners (high recall), at the cost of more false positives. Uses permutation
+importance to rank the churn drivers, since Naive Bayes has no built-in importance.
+
+**2. Decision Tree (cross-validated)**
+A tunable tree, regularized with cross-validated depth and leaf-size limits to
+control overfitting. Reaches 0.94 ROC AUC and 0.89 accuracy, with balanced
+precision and recall (0.79 each). Reads its churn drivers directly from the tree's
+built-in feature importances.
+
+## How They Compare
+
+Both models agree on the drivers, which is the important part: tenure and monthly
+charge dominate, followed by contract length. That agreement across two different
+algorithms is a sign the drivers are real signal, not artifacts of one model.
+
+## Key Findings
+
+- Shorter tenure and higher monthly charges are the strongest churn signals.
+- Longer contracts are associated with lower churn.
+- Retention efforts are best focused on early-tenure and high-charge customers.
+
+## Tech Stack
+
+Python, pandas, scikit-learn, matplotlib
+
+## Repository Structure
+
+Each model is a self-contained notebook with its own README section below. Data
+files are not included; place `churn_clean.csv` in the project folder before
+running. Install dependencies: `pip install pandas scikit-learn matplotlib`
+
+## Note
+
+These projects originated as graduate coursework and have been maintained and
+extended since (modernized for current library versions, with added feature-
+importance analysis and expanded evaluation). See each project's Updates section
+for details.
+
+---
+
+*Full write-ups for each model follow below.*
+
+# Customer Churn Classification - GaussianNB
 
 Predicting telecom customer churn and identifying the factors that drive it,
 using Gaussian Naive Bayes with permutation-importance analysis for the drivers.
 
-### Research Question
+## Research Question
 
 Which factors most influence customer churn, and can churn be predicted
 accurately enough to support retention decisions?
 
-### Dataset
+## Dataset
 
 A 10,000-record telecom customer dataset with a 26.5% churn rate. The data file
 (`churn_clean.csv`) is not included in this repository; place your own copy in
 the project root before running.
 
-### Approach
+## Approach
 
 - **Preprocessing:** mapped binary service fields to 0/1, collapsed raw timezones
   into standard US zones, one-hot encoded categorical predictors.
@@ -27,14 +77,14 @@ the project root before running.
   companion for direction of effect.
 - **Evaluation:** ROC AUC, precision, recall, F1, and a confusion matrix.
 
-### Results
+## Results
 
 - **ROC AUC: 0.89**
 - **Recall: 0.87** — the model catches 87% of customers who actually churn
 - Accuracy 0.76, which is only modestly above the 0.735 majority-class baseline,
   so AUC and recall are the metrics that matter here, not accuracy
 
-### Key Findings
+## Key Findings
 
 - **Tenure** is the strongest driver, and longer tenure lowers churn. New and
   short-tenure customers are the highest-risk group.
@@ -43,45 +93,47 @@ the project root before running.
 - Streaming add-ons show a slight *positive* association with churn, so promoting
   them as a retention tool is not supported by this data.
 
-### Recommendations
+## Recommendations
 
 - Focus retention on the first year of tenure, where risk is highest.
 - Review pricing and value for high monthly-charge segments.
 - Incentivize month-to-month customers toward longer contracts.
 
-### Tech Stack
+## Tech Stack
 
 Python, pandas, scikit-learn, matplotlib
 
-### Running It
+## Running It
 
 1. Place `churn_clean.csv` in the project root.
 2. Install dependencies: `pip install pandas scikit-learn matplotlib`
 3. Open `churn-classification.ipynb` and run all cells.
 
-### Updates
+## Updates
 
 - **2026-07:** Modernized for pandas 3.x, added permutation-importance driver
   analysis, and expanded evaluation with precision, recall, F1, and a confusion
   matrix.
 
-## Customer Churn Prediction: Decision Tree
+---
+
+# Customer Churn Prediction: Decision Tree
 
 Predicting telecom customer churn and identifying the factors that drive it,
 using a cross-validated decision tree classifier.
 
-### Research Question
+## Research Question
 
 Which factors most influence customer churn, and can churn be predicted
 accurately enough to support retention decisions?
 
-### Dataset
+## Dataset
 
 A 10,000-record telecom customer dataset with a 26.5% churn rate. The data file
 (`churn_clean.csv`) is not included in this repository; place your own copy in
 the project root before running.
 
-### Approach
+## Approach
 
 - **Preprocessing:** mapped binary service fields to 0/1, collapsed raw timezones
   into standard US zones, one-hot encoded categorical predictors.
@@ -91,7 +143,7 @@ the project root before running.
 - **Driver analysis:** the tree's built-in feature importances rank the drivers.
 - **Evaluation:** ROC AUC, precision, recall, F1, and a confusion matrix.
 
-### Results
+## Results
 
 - **ROC AUC: 0.94**
 - **Accuracy: 0.89**, with balanced precision and recall (0.79 each)
@@ -99,7 +151,7 @@ the project root before running.
   accuracy, 0.80 test AUC). Cross-validated depth and leaf-size limits lifted
   test AUC to 0.94.
 
-### Key Findings
+## Key Findings
 
 - **Tenure** and **monthly charge** are the dominant drivers, together accounting
   for roughly three-quarters of the model's splitting decisions.
@@ -107,23 +159,23 @@ the project root before running.
 - Longer tenure and longer contracts are associated with lower churn; higher
   monthly charges with higher churn.
 
-### Recommendations
+## Recommendations
 
 - Focus retention on the first year of tenure, where risk is highest.
 - Review pricing and value for high monthly-charge segments.
 - Incentivize month-to-month customers toward longer contracts.
 
-### Tech Stack
+## Tech Stack
 
 Python, pandas, scikit-learn, matplotlib
 
-### Running It
+## Running It
 
 1. Place `churn_clean.csv` in the project root.
 2. Install dependencies: `pip install pandas scikit-learn matplotlib`
 3. Open the notebook and run all cells.
 
-### Updates
+## Updates
 
 - **2026-07:** Modernized for pandas 3.x, tuned the tree with cross-validation to
   fix overfitting (test AUC 0.80 to 0.94), added feature-importance driver
